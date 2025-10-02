@@ -1,13 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <limiter.h>
+#include "limiter.h"
 #include <sys/time.h>
-
-
-
-
-
 
 
 double get_time() {
@@ -55,9 +50,4 @@ int allow_request(bucket *b) {
     }
 
     return 429;
-}
-
-
-int main() {
-    return 0;
 }
