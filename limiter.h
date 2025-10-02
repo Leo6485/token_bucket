@@ -1,4 +1,5 @@
-#include<time.h>
+#ifndef LIMITER_H
+#define LIMITER_H
 
 typedef struct {
     int mode; // 0: OFF, 1: BURSTY, 2: STRICT
@@ -8,6 +9,9 @@ typedef struct {
     double last_update;
 } bucket;
 
-
+double get_time();
 bucket *init_bucket(int mode, int rate, int capacidade, int tokens);
+void update_bucket(bucket *b, int mode, int capacidade, int tokens);
 int allow_request(bucket *b);
+
+#endif

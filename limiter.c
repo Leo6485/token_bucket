@@ -1,35 +1,50 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <limiter.h>
-#include <sys.time.h>
+#include <sys/time.h>
 
 bucket *init_bucket(int mode, int rate, int capacidade) {
     bucket *b = malloc(sizeof(bucket));
     b->mode = mode;
-    b-rate = rate;
+    b->rate = rate;
     b->capacidade = mode != 2 ? capacidade : rate;
-    b->last_request = 0;
+    b->last_update = get_time();
+    b->tokens = b->capacidade;
+
+    return b;
 }
 
-void update_bucket
+void update_bucket(bucket *b, int mode, int rate, int capacidade) {
+    b->mode = mode;
+    b->rate = rate;
+    b->capacidade = mode != 2 ? capacidade : rate;
+    b->last_update = get_time();
+    b->tokens = b->capacidade;
+}
+
 double get_time() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    return tv.tv_sec * tv.tv_usec / 1e6;
+    return tv.tv_sec + tv.tv_usec / 1e6;
 }
 
 int allow_request(bucket *b) {
-    if (!mode) return 1;
+    if (!b->mode) return 1;
 
-    now = get_time()
-    delta = now - b->last_update;
-    refil = delta * b->rate;
-    b->tokens = (b->tokens + refil <= b->capacidade) b->tokens + refil : b->capacidade;
+    double now = get_time();
+    double delta = now - b->last_update;
+
+    b->tokens += delta * b->rate;
+    if (b->tokens > b->capacidade) {
+        b->tokens = b->capacidade;
+    }
+
     b->last_update = now;
 
-    if (b->tokens) {
-        b->token--;
-        return 1
+    if (b->tokens > 0) {
+        b->tokens--;
+        return 1;
     }
 
     return 0;
