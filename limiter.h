@@ -10,8 +10,8 @@ typedef struct {
 } bucket;
 
 double get_time();
-bucket *init_bucket(int mode, int rate, int capacidade, int tokens);
-void update_bucket(bucket *b, int mode, int capacidade, int tokens);
+bucket *init_bucket(int mode, int rate, int capacidade);
+void update_bucket(bucket *b, int mode, int rate, int capacidade);
 int allow_request(bucket *b);
 
 #endif

@@ -4,6 +4,19 @@
 #include <limiter.h>
 #include <sys/time.h>
 
+
+
+
+
+
+
+double get_time() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec + tv.tv_usec / 1e6;
+}
+
+
 bucket *init_bucket(int mode, int rate, int capacidade) {
     bucket *b = malloc(sizeof(bucket));
     b->mode = mode;
@@ -23,14 +36,8 @@ void update_bucket(bucket *b, int mode, int rate, int capacidade) {
     b->tokens = b->capacidade;
 }
 
-double get_time() {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec + tv.tv_usec / 1e6;
-}
-
 int allow_request(bucket *b) {
-    if (!b->mode) return 1;
+    if (!b->mode) return 200;
 
     double now = get_time();
     double delta = now - b->last_update;
@@ -44,10 +51,10 @@ int allow_request(bucket *b) {
 
     if (b->tokens > 0) {
         b->tokens--;
-        return 1;
+        return 200;
     }
 
-    return 0;
+    return 429;
 }
 
 
